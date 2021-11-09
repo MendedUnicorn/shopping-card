@@ -24,6 +24,20 @@ const Shop = (props) => {
     }
   };
 
+  const closeCart = () => {
+    setShowCart(!showCart);
+  };
+
+  const removeItemFromCart = (e) => {
+    console.dir(e.target.parentElement.id);
+    cart.map((item, i) => {
+      if (item.itemId == e.target.parentElement.id) {
+        console.log('match');
+        setCart([...cart.slice(0, i), ...cart.slice(i + 1)]);
+      }
+    });
+  };
+
   const handleAddToCart = (e) => {
     console.log(e.target.parentElement.children[4].children[1].value);
     const itemClicked = e.target.parentElement;
@@ -69,12 +83,15 @@ const Shop = (props) => {
 
   return (
     <div className='shopping'>
-      <ShoppingBanner
-        qnt={totalQnt}
-        price={totalPrice}
-        onClick={() => setShowCart(!showCart)}
-      />
-      {showCart ? <ShoppingCart cartItems={cart} /> : null}
+      <ShoppingBanner qnt={totalQnt} price={totalPrice} onClick={closeCart} />
+      {showCart ? (
+        <ShoppingCart
+          showCart={showCart}
+          onClick={closeCart}
+          cartItems={cart}
+          removeFromCart={removeItemFromCart}
+        />
+      ) : null}
       <div className='shopping-items'>
         {items.map((item) => {
           const handleIncrement = (e) => {
@@ -124,7 +141,9 @@ const Shop = (props) => {
                   -
                 </button>
               </label>
-              <button onClick={handleAddToCart}>Add to Cart..</button>
+              <button className='add-to-cart' onClick={handleAddToCart}>
+                Add to Cart..
+              </button>
             </div>
           );
         })}
